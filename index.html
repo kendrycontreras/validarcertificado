@@ -56,7 +56,7 @@
             // Consulta a la tabla 'certificados' filtrando por la columna 'codigo'
             const { data, error } = await _supabase
                 .from('certificados')
-                .select('nombre, curso')
+                .select('nombre, curso, date')
                 .eq('codigo', codigoInput)
                 .single(); // Traer solo un resultado
 
@@ -68,7 +68,8 @@
                 resultadoDiv.innerHTML = `
                     <strong>✅ Certificado Verificado</strong><br><br>
                     <strong>Alumno:</strong> ${data.nombre}<br>
-                    <strong>Curso:</strong> ${data.curso}
+                    <strong>Curso:</strong> ${data.curso}<br>
+                    <strong>Curso:</strong> ${data.date}
                 `;
             }
         } catch (err) {
@@ -84,4 +85,5 @@
 </body>
 
 </html>
+
 
