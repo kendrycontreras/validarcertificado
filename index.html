@@ -21,5 +21,24 @@
 </div>
 
 <script src="script.js"></script>
+<script>
+  window.onload = function() {
+    // 1. Buscamos el parámetro "cert" en la URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const codigoCertificado = urlParams.get('cert');
+
+    // 2. Si el código existe, lo ponemos en la barra de búsqueda
+    if (codigoCertificado) {
+      // IMPORTANTE: Cambia 'miBuscador' por el ID o Clase de tu input
+      const inputBusqueda = document.getElementById('certId'); 
+      
+      if (inputBusqueda) {
+        inputBusqueda.value = codigoCertificado;
+        // Opcional: darle foco para que el usuario solo tenga que dar Enter
+        inputBusqueda.focus();
+      }
+    }
+  }
+</script>
 </body>
 </html>
