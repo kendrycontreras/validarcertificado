@@ -5,20 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Validador de Certificados</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        :root { --primary: #3b82f6; --bg: #f8fafc; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-        .container { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); width: 90%; max-width: 400px; text-align: center; }
-        h2 { color: #1e293b; margin-bottom: 1.5rem; }
-        input { width: 100%; padding: 12px; margin-bottom: 1rem; border: 2px solid #e2e8f0; border-radius: 8px; box-sizing: border-box; font-size: 1rem; }
-        button { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: background 0.3s; }
-        button:hover { background: #2563eb; }
-        #resultado { margin-top: 1.5rem; padding: 1rem; border-radius: 8px; display: none; }
-        .success { background: #dcfce7; color: #166534; display: block !important; border: 1px solid #bbf7d0; }
-        .error { background: #fee2e2; color: #991b1b; display: block !important; border: 1px solid #fecaca; }
-        .loader { border: 3px solid #f3f3f3; border-top: 3px solid var(--primary); border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; margin-right: 10px; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    </style>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -30,60 +20,6 @@
     <div id="resultado"></div>
 </div>
 
-<script>
-    // CONFIGURACIÓN DE SUPABASE
-    const SUPABASE_URL = 'https://krllfdbmxmtllngjrtpk.supabase.co';
-    const SUPABASE_ANON_KEY = 'sb_publishable_5MB6GokqPar8kALmNz-jWQ_B7eaNLT4';
-    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-    async function validarCertificado() {
-        const codigoInput = document.getElementById('certId').value.trim();
-        const resultadoDiv = document.getElementById('resultado');
-        const btn = document.getElementById('btnConsultar');
-
-        if (!codigoInput) {
-            alert("Por favor ingresa un código.");
-            return;
-        }
-
-        // Mostrar estado de carga
-        btn.disabled = true;
-        btn.innerHTML = '<span class="loader"></span> Buscando...';
-        resultadoDiv.className = '';
-        resultadoDiv.innerHTML = '';
-
-        try {
-            // Consulta a la tabla 'certificados' filtrando por la columna 'codigo'
-            const { data, error } = await _supabase
-                .from('certificados')
-                .select('nombre, curso, date')
-                .eq('codigo', codigoInput)
-                .single(); // Traer solo un resultado
-
-            if (error || !data) {
-                resultadoDiv.className = 'error';
-                resultadoDiv.innerHTML = '❌ Código de certificado no válido o no encontrado.';
-            } else {
-                resultadoDiv.className = 'success';
-                resultadoDiv.innerHTML = `
-                    <strong>✅ Certificado Verificado</strong><br><br>
-                    <strong>Alumno:</strong> ${data.nombre}<br>
-                    <strong>Curso:</strong> ${data.curso}<br>
-                    <strong>Curso:</strong> ${data.date}
-                `;
-            }
-        } catch (err) {
-            resultadoDiv.className = 'error';
-            resultadoDiv.innerHTML = 'Hubo un error al conectar con la base de datos.';
-        } finally {
-            btn.disabled = false;
-            btn.innerText = 'Consultar';
-        }
-    }
-</script>
-
+<script src="script.js"></script>
 </body>
-
 </html>
-
-
