@@ -3,42 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Validador de Certificados</title>
+    <title>Validar certificados | Kendry Contreras</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="container">
-    <h2>Validar Certificado</h2>
-    <input type="text" id="certId" placeholder="Ingresa el código del certificado">
+<div class="card">
+    <div class="icon-header">
+        <i class="fa-solid fa-graduation-cap"></i>
+    </div>
+    <h1>Verificar Certificado</h1>
+    <p>Ingresa el código único para validar la autenticidad del certificado emitido.</p>
+
+    <div class="input-group">
+        <i class="fa-solid fa-qrcode"></i>
+        <input type="text" id="certId" placeholder="Ej: EXCEL-123456" spellcheck="false">
+    </div>
+
     <button onclick="validarCertificado()" id="btnConsultar">Consultar</button>
-    
-    <div id="resultado"></div>
+
+    <div id="resultado">
+    </div>
+
+    <footer>
+        &copy; 2026 Verificación de certificados</br>Emitidos por Kendry Contreras [Ing. Informática]
+    </footer>
 </div>
 
 <script src="script.js"></script>
-<script>
-  window.onload = function() {
-    // 1. Buscamos el parámetro "cert" en la URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const codigoCertificado = urlParams.get('cert');
 
-    // 2. Si el código existe, lo ponemos en la barra de búsqueda
-    if (codigoCertificado) {
-      // IMPORTANTE: Cambia 'miBuscador' por el ID o Clase de tu input
-      const inputBusqueda = document.getElementById('certId'); 
-      
-      if (inputBusqueda) {
-        inputBusqueda.value = codigoCertificado;
-        // Opcional: darle foco para que el usuario solo tenga que dar Enter
-        inputBusqueda.focus();
-      }
-    }
-  }
-</script>
 </body>
 </html>

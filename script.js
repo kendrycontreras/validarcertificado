@@ -23,7 +23,7 @@ async function validarCertificado() {
         // Consulta a la tabla 'certificados' filtrando por la columna 'codigo'
         const { data, error } = await _supabase
             .from('certificados')
-            .select('nombre, apellido, dni, date')
+            .select('nombre, apellido, curso, dni, date')
             .eq('codigo', codigoInput)
             .single(); // Traer solo un resultado
 
@@ -33,11 +33,15 @@ async function validarCertificado() {
         } else {
             resultadoDiv.className = 'success';
             resultadoDiv.innerHTML = `
-                <strong>✅ Certificado Verificado</strong><br><br>
-                <strong>Nombre:</strong> ${data.nombre}<br>
-                <strong>Apellido:</strong> ${data.apellido}<br>
-                <strong>Cédula:</strong> ${data.dni}<br>
-                <strong>Emitido el:</strong> ${data.date}
+
+                <div>
+                    <h3><i class="fa-solid fa-circle-check"></i> Certificado Válido</h3><br>
+                    
+                    <span><i class="fa-solid fa-user-graduate"></i> <b>Alumno: </b>${data.nombre} ${data.apellido}</span></br>
+                    <span><i class="fa-solid fa-certificate"></i> <b>Curso: </b>${data.curso}</span></br>
+                    <span><i class="fa-solid fa-calendar-check"></i> <b>Fecha emisión: </b>${data.date}</span></br>
+                    <span><i class="fa-solid fa-clock"></i> <b>Formación: </b> 5 Horas</span>
+                </div>
             `;
         }
     } catch (err) {
