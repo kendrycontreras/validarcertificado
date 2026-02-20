@@ -4,9 +4,7 @@ const SUPABASE_ANON_KEY = 'sb_publishable_5MB6GokqPar8kALmNz-jWQ_B7eaNLT4';
 const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 async function validarCertificado() {
-    // Obtenemos el valor, quitamos espacios y LUEGO quitamos los guiones
-    const codigoInput = document.getElementById('certId').value.trim().replace(/-/g, '');
-    
+    const codigoInput = document.getElementById('certId').value.trim().toUpperCase().replace(/-/g, '');
     const resultadoDiv = document.getElementById('resultado');
     const btn = document.getElementById('btnConsultar');
 
@@ -55,3 +53,4 @@ async function validarCertificado() {
     }
 
 }
+
