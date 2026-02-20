@@ -53,4 +53,5 @@ async function validarCertificado() {
         btn.disabled = false;
         btn.innerText = 'Consultar';
     }
+
 }
