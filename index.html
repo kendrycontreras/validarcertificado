@@ -36,7 +36,18 @@
         &copy; 2026 Verificación de certificados</br>Emitidos por Kendry Contreras [Ing. Informática]
     </footer>
 </div>
+<script>
+  // 1. Capturamos la URL actual
+  const urlParams = new URLSearchParams(window.location.search);
+  
+  // 2. Buscamos el parámetro llamado 'codigo'
+  const elCodigo = urlParams.get('codigo');
 
+  // 3. Si el código existe en la URL, lo pegamos en el input
+  if (elCodigo) {
+    document.getElementById('miInput').value = elCodigo;
+  }
+</script>
 <script src="script.js"></script>
 
 </body>
