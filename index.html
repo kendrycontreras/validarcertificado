@@ -398,6 +398,7 @@
     </footer>
 
     <!-- JavaScript -->
+    <!-- JavaScript -->
     <script>
         // 1. REEMPLAZA CON TUS CREDENCIALES REALES DE SUPABASE
         const SUPABASE_URL = 'https://gedeqtoowqevjvbjrenr.supabase.co';
@@ -469,6 +470,35 @@
         // Event listener para la tecla Enter
         document.getElementById('hashInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
+                validarCertificado();
+            }
+        });
+
+        // LEER CÓDIGO DESDE LA URL AUTOMÁTICAMENTE
+        document.addEventListener('DOMContentLoaded', () => {
+            const hashInput = document.getElementById('hashInput');
+            
+            // 1. Intentar obtener por parámetro ?code=C5C959FA o ?hash=C5C959FA
+            const urlParams = new URLSearchParams(window.location.search);
+            let code = urlParams.get('code') || urlParams.get('hash');
+
+            // 2. Si no hay parametro, intentar obtener por el Hash (#C5C959FA)
+            if (!code && window.location.hash) {
+                code = window.location.hash.replace('#', '');
+            }
+
+            // 3. Si no hay parametro ni hash, intentar obtener del final de la ruta (/C5C959FA)
+            if (!code) {
+                const pathSegments = window.location.pathname.split('/').filter(Boolean);
+                const lastSegment = pathSegments[pathSegments.length - 1];
+                if (lastSegment && lastSegment !== 'validarcertificado' && lastSegment !== 'index.html') {
+                    code = lastSegment;
+                }
+            }
+
+            // Si se detectó algún código, colocarlo en el input y validar
+            if (code) {
+                hashInput.value = code.trim().toUpperCase();
                 validarCertificado();
             }
         });
