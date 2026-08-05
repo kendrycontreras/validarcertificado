@@ -3,54 +3,475 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Validar certificados | Kendry Contreras</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <title>Validador de Certificados | Ing. Kendry Contreras</title>
+    <!-- Google Fonts - Outfit -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <link rel="stylesheet" href="style.css">
+    <!-- Supabase JS Client (CDN) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --primary-color: #182b5c;
+            --primary-light: #e8ecf8;
+            --accent-color: #0e808b;
+            --accent-light: #e0f2f1;
+            --dark-bg: #0f172a;
+            --card-bg: #ffffff;
+            --text-color: #1e293b;
+            --text-light: #64748b;
+            --white: #ffffff;
+            --border-color: #e2e8f0;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+            --radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            color: var(--text-color);
+            background-color: #f8fafc;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Top Notification Bar */
+        .top-bar {
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            color: white;
+            text-align: center;
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .top-bar i {
+            margin-right: 6px;
+        }
+
+        /* Header */
+        header {
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        
+        /* Main Container */
+        .main-wrapper {
+            padding: 60px 20px;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at top right, rgba(14, 128, 139, 0.08), transparent 50%),
+                        linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
+        }
+
+        .validator-card {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 650px;
+            padding: 40px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(24, 43, 92, 0.15);
+        }
+
+        .validator-header h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            line-height: 1.25;
+            color: var(--text-color);
+            margin-bottom: 12px;
+        }
+
+        .validator-header h1 span {
+            color: var(--accent-color);
+            background: linear-gradient(120deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .validator-header p {
+            font-size: 1rem;
+            color: var(--text-light);
+            margin-bottom: 30px;
+        }
+
+        /* Search Form */
+        .search-box {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            flex: 1;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 16px 16px 16px 45px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            outline: none;
+            transition: var(--transition);
+            background: #f8fafc;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--accent-color);
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(14, 128, 139, 0.1);
+        }
+
+        .btn-main {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 10px 20px rgba(24, 43, 92, 0.2);
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-main:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px rgba(14, 128, 139, 0.3);
+        }
+
+        /* Error Message */
+        .error-message {
+            display: none;
+            background-color: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            margin-top: 15px;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Result Section */
+        .result-card {
+            display: none;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px dashed var(--border-color);
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #15803d;
+            background-color: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            padding: 8px 18px;
+            border-radius: 30px;
+            margin-bottom: 24px;
+        }
+
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            background: #f8fafc;
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .data-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .data-item.full-width {
+            grid-column: span 2;
+        }
+
+        .label {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .value {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .value-highlight {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark-bg);
+            color: #64748b;
+            padding: 25px 0;
+            text-align: center;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .validator-card {
+                padding: 25px 20px;
+            }
+
+            .search-box {
+                flex-direction: column;
+            }
+
+            .btn-main {
+                justify-content: center;
+                width: 100%;
+            }
+
+            .data-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .data-item.full-width {
+                grid-column: span 1;
+            }
+        }
+    </style>
 </head>
 <body>
 
-<div class="card">
-    <div class="icon-header">
-        <i class="fa-solid fa-graduation-cap"></i>
-    </div>
-    <h1>Verificar Certificado</h1>
-    <p>Ingresa el código único para validar la autenticidad del certificado emitido.</p>
-
-    <div class="input-group">
-        <i class="fa-solid fa-qrcode"></i>
-        <input type="text" id="certId" placeholder="Ej: EXCEL-123456" spellcheck="false">
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <i class="fas fa-shield-alt"></i> Sistema Oficial de Verificación de Certificados
     </div>
 
-    <button onclick="validarCertificado()" id="btnConsultar">Consultar</button>
+    <!-- Main Section -->
+    <main class="main-wrapper">
+        <div class="validator-card">
+            <span class="badge"><i class="fas fa-certificate"></i> Certificación Oficial</span>
+            
+            <div class="validator-header">
+                <h1><span>VALIDAR CERTIFICADOS EMITIDOS</span></h1>
+                <p>Ingresa el código HASH de 8 caracteres que figura en el documento para verificar su validez y autenticidad en tiempo real.</p>
+            </div>
 
-    <div id="resultado">
-    </div>
+            <!-- Formulario de búsqueda -->
+            <div class="search-box">
+                <div class="input-wrapper">
+                    <i class="fas fa-hashtag"></i>
+                    <input type="text" id="hashInput" placeholder="Ej: A1B2C3D4" maxlength="8" />
+                </div>
+                <button class="btn-main" onclick="validarCertificado()">
+                    <i class="fas fa-search"></i> Validar
+                </button>
+            </div>
 
+            <!-- Alerta de error -->
+            <div id="errorMessage" class="error-message">
+                <i class="fas fa-exclamation-circle"></i>
+                <span id="errorText">No se encontró ningún certificado con el código ingresado.</span>
+            </div>
+
+            <!-- Resultado -->
+            <div id="resultCard" class="result-card">
+                <div class="status-badge">
+                    <i class="fas fa-check-circle"></i> Certificado Auténtico y Válido
+                </div>
+
+                <div class="data-grid">
+                    <div class="data-item full-width">
+                        <span class="label">Curso / Taller</span>
+                        <span class="value value-highlight" id="resCurso">-</span>
+                    </div>
+
+                    <div class="data-item">
+                        <span class="label">Participante</span>
+                        <span class="value" id="resNombre">-</span>
+                    </div>
+
+                    <div class="data-item">
+                        <span class="label">Cédula / Identificación</span>
+                        <span class="value" id="resCedula">-</span>
+                    </div>
+
+                    <div class="data-item">
+                        <span class="label">Fecha de Emisión</span>
+                        <span class="value" id="resFecha">-</span>
+                    </div>
+
+                    <div class="data-item">
+                        <span class="label">Duración Académica</span>
+                        <span class="value" id="resDuracion">-</span>
+                    </div>
+
+                    <div class="data-item">
+                        <span class="label">Profesor / Instructor</span>
+                        <span class="value" id="resProfesor">-</span>
+                    </div>
+
+                    <div class="data-item">
+                        <span class="label">Código HASH</span>
+                        <span class="value" id="resHash" style="font-family: monospace; letter-spacing: 1px;">-</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
     <footer>
-        &copy; 2026 Verificación de certificados</br>Emitidos por Kendry Contreras [Ing. Informática]
+        <div class="container">
+            <p>&copy; 2026 Sistema de Validador de Certificados. Dictado por el Ing. Kendry Contreras.</p>
+        </div>
     </footer>
-</div>
-<script>
-  // 1. Capturamos la URL actual
-  const urlParams = new URLSearchParams(window.location.search);
-  
-  // 2. Buscamos el parámetro llamado 'codigo'
-  const elCodigo = urlParams.get('id');
 
-  // 3. Si el código existe en la URL, lo pegamos en el input
-  if (elCodigo) {
-    document.getElementById('certId').value = elCodigo;
-  }
-</script>
-<script src="script.js"></script>
+    <!-- JavaScript -->
+    <script>
+        // 1. REEMPLAZA CON TUS CREDENCIALES REALES DE SUPABASE
+        const SUPABASE_URL = 'https://gedeqtoowqevjvbjrenr.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdlZGVxdG9vd3Fldmp2YmpyZW5yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3NjAzODAsImV4cCI6MjA4NzMzNjM4MH0.fArL01V5XRQWpSxSDj1Ds9YKYcLBAxKLskc7osXcBpQ';
 
+        // Renombrado a 'supabaseClient' para evitar el SyntaxError
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        async function validarCertificado() {
+            const hashInput = document.getElementById('hashInput');
+            const hash = hashInput.value.trim();
+            const resultCard = document.getElementById('resultCard');
+            const errorMessage = document.getElementById('errorMessage');
+
+            // Limpiar visualizaciones previas
+            resultCard.style.display = 'none';
+            errorMessage.style.display = 'none';
+
+            if (!hash) {
+                showError('Por favor, ingresa el código HASH del certificado.');
+                return;
+            }
+
+            try {
+                // Consultar en Supabase a la tabla cursos_participantes
+                const { data, error } = await supabaseClient
+                    .from('cursos_participantes')
+                    .select('hash, nombres, apellidos, cedula, nombre_curso, fecha, duracion, profesor')
+                    .eq('hash', hash)
+                    .single();
+
+                if (error || !data) {
+                    showError('No se encontró ningún certificado válido con el código HASH ingresado.');
+                    return;
+                }
+
+                // Cargar los valores devueltos en la interfaz
+                document.getElementById('resHash').textContent = data.hash;
+                document.getElementById('resNombre').textContent = `${data.nombres} ${data.apellidos}`;
+                document.getElementById('resCedula').textContent = data.cedula;
+                document.getElementById('resCurso').textContent = data.nombre_curso;
+                
+                // Formatear Fecha (YYYY-MM-DD a DD/MM/YYYY)
+                if (data.fecha) {
+                    const partesFecha = data.fecha.split('-');
+                    document.getElementById('resFecha').textContent = `${partesFecha[2]}/${partesFecha[1]}/${partesFecha[0]}`;
+                } else {
+                    document.getElementById('resFecha').textContent = '-';
+                }
+
+                document.getElementById('resDuracion').textContent = `${data.duracion} HORAS ACÁDEMICAS`;
+                document.getElementById('resProfesor').textContent = data.profesor || 'ING. KENDRY CONTRERAS';
+
+                // Mostrar tarjeta con efecto
+                resultCard.style.display = 'block';
+
+            } catch (err) {
+                showError('Ocurrió un problema de conexión al validar el certificado.');
+            }
+        }
+
+        function showError(msg) {
+            const errorMessage = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            errorText.textContent = msg;
+            errorMessage.style.display = 'flex';
+        }
+
+        // Event listener para la tecla Enter
+        document.getElementById('hashInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                validarCertificado();
+            }
+        });
+    </script>
 </body>
-
 </html>
-
